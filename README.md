@@ -5,7 +5,7 @@ Not optimised at *all*; it can take a few minutes to run.
 
 APP_ID defaults to Fallout 4.
 
-Requires Python 3.4 and a Steam Web API key (see start of show-friends.py).
+Requires Python 3.4 and a Steam Web API key (see start of steam-friends-played.py).
 
 ```
 pip install -r requirements.txt

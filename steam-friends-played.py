@@ -2,7 +2,7 @@
 from steam import WebAPI, SteamID
 import pprint
 try:
-    from local import API_KEY, STEAM_USER, APP_ID  # used for API_KEY, optional
+    from local import API_KEY, STEAM_USER, APP_ID  # used for API_KEY + friends, optional
 except ImportError:
     API_KEY = ""              # https://steamcommunity.com/dev/apikey
     STEAM_USER = "xfesty"     # Steam username
