@@ -1,1 +1,1 @@
-steam
+-e git://github.com/xfxf/steam.git#egg=steam
