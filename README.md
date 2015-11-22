@@ -1,7 +1,6 @@
 ### Show my friends in-game "played" time for a game on Steam
 
-Very basic script to show all friends playtime for a specific game on Steam.
-Not optimised at *all*; it can take a few minutes to run.
+Very basic script + library to show all friends playtime for a specific game on Steam.
 
 APP_ID defaults to Fallout 4.
 
