@@ -11,7 +11,7 @@ except ImportError:
     DEBUG = False             # Enable debugging, False or True
 
 if __name__ == "__main__":
-    print("Connecting to Steam API server...")
+    print("Connecting to Steam API server and populating friends...")
     me = MySteamFriends(API_KEY, STEAM_USER, debugging=DEBUG)
     print("Connected, collecting user %s's friends in-game time for %s..." % (STEAM_USER, me.get_game_name(APP_ID)))
     game_stats = me.get_everyones_gamestats(APP_ID)
