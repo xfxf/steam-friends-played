@@ -11,27 +11,33 @@ class MySteamFriends(object):
     # concurrent Steam Web API requests to run
     api_pool = ThreadPool(6)
 
-    def __init__(self, api_key: str, steam_username: str, debugging: bool = False):
+    def __init__(self, api_key: str, steam_username: str = None, steam_id: str = None, debugging: bool = False):
         """Initialises a connection to the Steam Web API and populates a list of friends.
 
         Args:
             api_key (str): API key from https://steamcommunity.com/dev/apikey
             steam_username (Optional[str]): steam username to base friends list from
+            steam_id (Optional[str]): steam ID to base friends list from (alternative to steam_username)
             debugging (Optional[bool]): Enable debugging info.  Defaults to off.
         """
 
         if api_key is "":
-            raise NameError("You don't have an API_KEY set!")
-        if debugging == 1:
+            raise NameError("You don't have an api_key set!")
+        if debugging is 1:
             basicConfig(stream=sys.stdout, level=DEBUG)
 
         self.steam_api = WebAPI(key=api_key)
-        self.my_steam_id = self.__get_my_steam_id(steam_username)
+
+        if steam_id is None and steam_username is None:
+            raise NameError("You don't have a steam_username or steam_id set!")
+        self.my_steam_id = steam_id
+        if self.my_steam_id is None:
+            self.my_steam_id = self.__get_my_steam_id(steam_username)
+
         self.friends_list = self.__get_my_friends_list()
-        self.friends_list_details = self.__get_my_friends_list_details()
         self.my_games_list = self.get_users_games(self.my_steam_id)
 
-        debug("api_key: %s, steam_username: %s, my_steam_id: %s" % (api_key, steam_username, self.my_steam_id))
+        debug("api_key: %s, steam_ide: %s, my_steam_id: %s" % (api_key, self.my_steam_id, self.my_steam_id))
 
     def __get_my_steam_id(self, steam_user: str) -> str:
         return self.steam_api.ISteamUser.ResolveVanityURL(vanityurl=steam_user, url_type=1)['response']['steamid']
@@ -40,9 +46,10 @@ class MySteamFriends(object):
         friends = self.steam_api.ISteamUser.GetFriendList(steamid=self.my_steam_id)['friendslist']['friends']
         friends_list = [f['steamid'] for f in friends]
         friends_list.append(self.my_steam_id)
+        #friends_list = __populate_my_friends_list()
         return friends_list
 
-    def __get_my_friends_list_details(self):
+    def __populate_my_friends_list(self):
         friends_list_detailed = self.api_pool.map(self.get_steam_user_dict, self.friends_list)
         return friends_list_detailed
 
@@ -77,6 +84,7 @@ class MySteamFriends(object):
     def get_everyones_gamestats(self, appid: str) -> dict:
         # steam API is slow; use multiprocessing to submit concurrent HTTPS requests about each friend
         results = self.api_pool.starmap(self._get_game_user_info_dict, zip(self.friends_list, itertools.repeat(appid)))
+
         # transform result (list) into a dict only containing actual results, where key is sid
         result_dict = {}
         for result in list(filter(None.__ne__, results)):
@@ -91,9 +99,7 @@ class MySteamFriends(object):
 
     def get_game_playtime(self, sid: str, data: dict) -> dict:
         playtime_hours = round(data['playtime_forever'] / 60, 2)
-        print(self.friends_list_details)
-
         return ({
-            "steam_user": self.friends_list_details[sid],
+            "steam_user": self.get_steam_user(sid)['personaname'], #self.friends_list[sid]['personaname'],
             "hours": playtime_hours
         })
