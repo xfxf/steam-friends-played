@@ -1,6 +1,12 @@
 {% extends "bootstrap/base.html" %}
 
-{% block title %}PeerPressure: Steam gametimes{% endblock %}
+{% block title %}PeerPressure: Have you played Steam games more than your friends?{% endblock %}
+
+{% block meta %}
+    {{super()}}
+    <meta property="og:title" content="PeerPressure: Steam game playtimes"/>
+    <meta property="og:description" content="Have you played Steam games more than your friends?"/>
+{% endblock %}
 
 {% block content %}
 {% endblock %}
