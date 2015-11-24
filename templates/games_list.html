@@ -14,11 +14,11 @@
 
     {% for game in games_list|sort(reverse=True, attribute='playtime_forever') %}
 
-        {% if (game.playtime_forever/60) > 100 %}
+        {% if (game.playtime_forever/60) > 500 %}
             {% set gamecolor = 'btn-danger' %}
-        {% elif (game.playtime_forever/60) > 50 %}
+        {% elif (game.playtime_forever/60) > 200 %}
             {% set gamecolor = 'btn-warning' %}
-        {% elif (game.playtime_forever/60) > 20 %}
+        {% elif (game.playtime_forever/60) > 50 %}
             {% set gamecolor = 'btn-info' %}
         {% elif (game.playtime_forever/60) > 1 %}
             {% set gamecolor = 'btn-info' %}
