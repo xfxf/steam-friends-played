@@ -73,10 +73,11 @@ def nameerror_exception(e):
     return render_template('index.html', e=e), 500
 
 
-@app.errorhandler(Exception)
-def unhandled_exception(e):
-    app.logger.error('Unhandled Exception: %s', e)
-    return render_template('500.html', e=e), 500
+if DEBUG is False:
+    @app.errorhandler(Exception)
+    def unhandled_exception(e):
+        app.logger.error('Unhandled Exception: %s', e)
+        return render_template('500.html', e=e), 500
 
 if __name__ == "__main__":
     app.debug = DEBUG

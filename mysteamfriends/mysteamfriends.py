@@ -83,7 +83,7 @@ class MySteamFriends(object):
     def get_users_games(self, sid: str) -> dict:
         result = self.steam_api.IPlayerService.GetOwnedGames(steamid=sid, include_played_free_games=1,
                                                            include_appinfo=1, appids_filter=0)['response']
-        if result:
+        if 'games' in result:
             return result['games']
 
     def get_game_user_info(self, uid: str, appid: str) -> dict:
