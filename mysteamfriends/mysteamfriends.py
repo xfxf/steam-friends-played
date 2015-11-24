@@ -45,18 +45,26 @@ class MySteamFriends(object):
         debug("api_key: %s, steam_ide: %s, my_steam_id: %s" % (api_key, self.my_steam_id, self.my_steam_id))
 
     def __get_my_steam_id(self, steam_user: str) -> str:
-        return self.steam_api.ISteamUser.ResolveVanityURL(vanityurl=steam_user, url_type=1)['response']['steamid']
+        try:
+            return self.steam_api.ISteamUser.ResolveVanityURL(vanityurl=steam_user, url_type=1)['response']['steamid']
+        except KeyError:
+            raise NameError("That steam username doesn't exist!")
+
 
     def __get_my_friends_list(self) -> dict:
         friends = self.steam_api.ISteamUser.GetFriendList(steamid=self.my_steam_id)['friendslist']['friends']
         friends_list = [f['steamid'] for f in friends]
         friends_list.append(self.my_steam_id)
-        #friends_list = __populate_my_friends_list()  # inefficient, best to lookup smaller list after matching games
         return friends_list
 
     def __populate_my_friends_list(self):
         friends_list_detailed = self.api_pool.map(self.get_steam_user_dict, self.friends_list)
         return friends_list_detailed
+
+    def _get_game_user_info_dict(self, uid: str, appid: str) -> dict:
+        gameinfo = self.get_game_user_info(uid, appid)
+        if gameinfo:
+            return {uid: gameinfo}
 
     def get_game_name(self, appid: str) -> str:
         return [game['name'] for game in self.my_games_list if str(game['appid']) == appid][0]
@@ -82,11 +90,6 @@ class MySteamFriends(object):
         games = self.get_users_games(uid)
         if games:
             return [game for game in games if str(game['appid']) == appid]
-
-    def _get_game_user_info_dict(self, uid: str, appid: str) -> dict:
-        gameinfo = self.get_game_user_info(uid, appid)
-        if gameinfo:
-            return {uid: gameinfo}
 
     def get_everyones_gamestats(self, appid: str) -> dict:
         # steam API is slow; uses threading to submit concurrent requests

@@ -63,6 +63,11 @@ def username(user_identifier=None):
                            personaname=me.get_steam_username(me.my_steam_id))
 
 
+@app.errorhandler(NameError)
+def nameerror_exception(e):
+    return render_template('index.html', e=e), 500
+
+
 @app.errorhandler(Exception)
 def unhandled_exception(e):
     app.logger.error('Unhandled Exception: %s', e)

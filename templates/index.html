@@ -10,6 +10,10 @@
           <input type="submit" value="Submit">
       </form>
 
+      {% if e %}
+          <br><pre class="error">{{ e }}</pre>
+      {% endif %}
+
       <script>
           function redirectUrl() {
               var username = document.getElementById('username').value;
