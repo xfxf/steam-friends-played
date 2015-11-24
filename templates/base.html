@@ -1,17 +1,30 @@
 {% extends "bootstrap/base.html" %}
 
+{% block title %}PeerPressure: Steam gametimes{% endblock %}
+
 {% block content %}
 {% endblock %}
 
 {% block scripts %}
     <div class="col-sm-12" style="height:50px;"></div>
     <div class="container-fluid text-center">
-      <a href="{{ url_for('.index', _external=TRUE) }}"><strong>{{ url_for('.index', _external=TRUE) }}</strong></a>&nbsp;&nbsp;&nbsp;
+      <a href="{{ url_for('.index', _external=TRUE) }}"><strong>peerpressure.us</strong></a>&nbsp;&nbsp;&nbsp;
       contact: <a href="https://twitter.com/xfxf" class="btn btn-xs btn-primary">@xfxf</a>
       code: <a href="https://github.com/xfxf/steam-friends-played" class="btn btn-xs btn-primary">github.com/xfxf/steam-friends-played</a>
     </div>
     <div class="col-sm-12" style="height:20px;"></div>
     {{super()}}
 {% endblock %}
+
+{% block styles %}
+    {{super()}}
+    <style>
+        body {
+            background-color: #1b2838;
+            color: white;
+        }
+    </style>
+{% endblock %}
+
 
 
