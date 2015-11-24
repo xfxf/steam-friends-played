@@ -7,7 +7,7 @@ try:
     from local import API_KEY, DEBUG, CONCURRENT_API, FLASK_THREADED  # used for API_KEY + friends, optional
 except ImportError:
     API_KEY = ""                        # from https://steamcommunity.com/dev/apikey
-    DEBUG = True                        # Enable debugging, False or True
+    DEBUG = False                       # Enable debugging, False or True
     CONCURRENT_API = 8                  # How many concurrent Steam API requests to make
     FLASK_THREADED = True               # Run multithreaded Flask
 
