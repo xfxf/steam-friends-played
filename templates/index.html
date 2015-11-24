@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+
+      <h1>Enter steam username to search</h1>
+      <h4>Be patient, queries can take some time (10-60 seconds)</h4>
+      <br>
+
+      <form onsubmit="return redirectUrl()">
+          <input type="text" id="username"><br><br>
+          <input type="submit" value="Submit">
+      </form>
+
+      <script>
+          function redirectUrl() {
+              var username = document.getElementById('username').value;
+              if (!username) {
+                  alert("No username entered!")
+              } else {
+                  window.location.href = "/user/" + username;
+              }
+              return false;
+          }
+      </script>
+
+  </body>
+
+{% endblock %}

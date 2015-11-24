@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+
+    <h2>{{ personaname }}'s games</h2>
+    <hr>
+
+    {% for game in games_list|sort(reverse=True, attribute='playtime_forever') %}
+        <a href="/game/{{ steamid }}/{{ game.appid }}">{{game.name}}</a>: {{ game.playtime_forever/60 }} hours
+        <hr>
+    {% endfor %}
+
+{% endblock %}

@@ -23,7 +23,7 @@ class MySteamFriends(object):
 
         if api_key is "":
             raise NameError("You don't have an api_key set!")
-        if debugging is 1:
+        if debugging is True:
             basicConfig(stream=sys.stdout, level=DEBUG)
 
         self.steam_api = WebAPI(key=api_key)
@@ -54,10 +54,13 @@ class MySteamFriends(object):
         return friends_list_detailed
 
     def get_game_name(self, appid: str) -> str:
-        return [game['name'] for game in self.my_games_list if game['appid'] == appid][0]
+        return [game['name'] for game in self.my_games_list if str(game['appid']) == appid][0]
 
     def get_steam_user(self, sid: str) -> dict:
-        return self.steam_api.ISteamUser.GetPlayerSummaries(steamids=str(sid))['response']['players'][0]
+        return self.steam_api.ISteamUser.GetPlayerSummaries(steamids=sid)['response']['players'][0]
+
+    def get_steam_username(self, sid: str) -> str:
+        return self.get_steam_user(sid)['personaname']
 
     def get_steam_user_dict(self, sid: str) -> dict:
         result = self.get_steam_user(sid)
@@ -68,13 +71,12 @@ class MySteamFriends(object):
         result = self.steam_api.IPlayerService.GetOwnedGames(steamid=sid, include_played_free_games=1,
                                                            include_appinfo=1, appids_filter=0)['response']
         if result:
-            debug(result)
             return result['games']
 
     def get_game_user_info(self, uid: str, appid: int) -> dict:
         games = self.get_users_games(uid)
         if games:
-            return [game for game in games if game['appid'] == appid]
+            return [game for game in games if str(game['appid']) == appid]
 
     def _get_game_user_info_dict(self, uid: str, appid: int) -> dict:
         gameinfo = self.get_game_user_info(uid, appid)
@@ -93,13 +95,12 @@ class MySteamFriends(object):
 
         return result_dict
 
-    def sort_playtimes(self, gamestats: dict) -> list:
-        game_playtime = [self.get_game_playtime(sid, data) for sid, data in gamestats.items()]
-        return sorted(game_playtime, key=lambda k: (k['hours']))
+    def get_game_stats_detailed(self, gamestats: dict) -> list:
+        return [self._combine_steam_user_game_stats(sid, data) for sid, data in gamestats.items()]
+        #return sorted(game_playtime, key=lambda k: (k['hours']))
 
-    def get_game_playtime(self, sid: str, data: dict) -> dict:
-        playtime_hours = round(data['playtime_forever'] / 60, 2)
+    def _combine_steam_user_game_stats(self, sid: str, data: dict) -> dict:
         return ({
-            "steam_user": self.get_steam_user(sid)['personaname'], #self.friends_list[sid]['personaname'],
-            "hours": playtime_hours
+            "steam_user": self.get_steam_user(sid), #self.friends_list[sid]['personaname'],
+            "game_stats": data
         })

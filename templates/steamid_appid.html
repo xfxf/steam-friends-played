@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+
+    <h2>{{ game_title }} playtime for {{ personaname }}'s friends</h2>
+    <hr>
+
+    {% for friend in game_stats_detailed|sort(reverse=True, attribute='game_stats.playtime_forever') %}
+        <a href="/user/{{ friend.steam_user.steamid }}">{{ friend.steam_user.personaname }}</a><br>
+        {{ friend.game_stats.playtime_forever/60 }} hours
+        <hr>
+    {% endfor %}
+
+{% endblock %}
