@@ -1,11 +1,21 @@
 {% extends "base.html" %}
 {% block content %}
 
-      <h1>ERROR</h1>
-      <h3>You may have typed in an invalid steam username, or Steam's API may have timed out; try again.</h3>
+<div class="container">
 
-      <pre class="error">{{ e }}</pre>
+    <div class="col-sm-offset-1 col-sm-10 text-center">
+        <h3 class="alert alert-danger">Sorry, there was a problem!</h3>
+        <p>You might be trying to access a private profile, have an invalid user or game ID, or Steam's servers might have timed out; try again.</p>
+    </div>
 
-  </body>
+    <div class="col-sm-12" style="height:20px;"></div>
+
+    {% if e %}
+        <div class="col-sm-offset-2 col-sm-8">
+            <pre class="alert alert-danger"><b>ERROR:</b> {{ e }}</pre>
+        </div>
+    {% endif %}
+
+</div>
 
 {% endblock %}

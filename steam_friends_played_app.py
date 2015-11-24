@@ -2,16 +2,21 @@
 from mysteamfriends import MySteamFriends
 from flask import Flask
 from flask import render_template
+from flask_bootstrap import Bootstrap
 
 try:
-    from local import API_KEY, DEBUG, CONCURRENT_API, FLASK_THREADED  # used for API_KEY + friends, optional
+    from local import API_KEY, DEBUG, CONCURRENT_API, FLASK_THREADED, SERVER_NAME  # local.py optional
 except ImportError:
     API_KEY = ""                        # from https://steamcommunity.com/dev/apikey
-    DEBUG = False                       # Enable debugging, False or True
-    CONCURRENT_API = 8                  # How many concurrent Steam API requests to make
-    FLASK_THREADED = True               # Run multithreaded Flask
+    DEBUG = False                       # Enable debugging (default False)
+    CONCURRENT_API = 8                  # How many concurrent Steam API requests to make (default 8)
+    FLASK_THREADED = True               # Run multithreaded Flask (default True)
+    SERVER_NAME = None                  # Hostname of server (default None)
+
 
 app = Flask(__name__.split('.')[0])
+app.config["SERVER_NAME"] = SERVER_NAME
+Bootstrap(app)
 
 
 @app.route('/')
@@ -72,7 +77,6 @@ def nameerror_exception(e):
 def unhandled_exception(e):
     app.logger.error('Unhandled Exception: %s', e)
     return render_template('500.html', e=e), 500
-
 
 if __name__ == "__main__":
     app.debug = DEBUG

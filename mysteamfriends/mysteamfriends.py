@@ -32,7 +32,7 @@ class MySteamFriends(object):
         self.steam_api = WebAPI(key=api_key)
 
         if steam_id is None and steam_username is None:
-            raise NameError("You don't have a steam_username or steam_id set!")
+            raise NameError("You don't call MySteamFriends with steam_username or steam_id (either required).")
         self.my_steam_id = steam_id
         if self.my_steam_id is None:
             self.my_steam_id = self.__get_my_steam_id(steam_username)

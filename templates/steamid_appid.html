@@ -1,13 +1,36 @@
 {% extends "base.html" %}
 {% block content %}
 
-    <h2>{{ game_title }} playtime for {{ personaname }}'s friends</h2>
-    <hr>
+<div class="container">
+
+    <div class="col-sm-offset-1 col-sm-10 text-center">
+        <h3><strong>{{ game_title }}</strong> playtime including {{ personaname }}'s friends</h3>
+        <p>Click on a friend to see their games</p>
+    </div>
+
+    <div class="col-sm-12" style="height:20px;"></div>
 
     {% for friend in game_stats_detailed|sort(reverse=True, attribute='game_stats.playtime_forever') %}
-        <a href="/user/{{ friend.steam_user.steamid }}">{{ friend.steam_user.personaname }}</a><br>
-        {{ friend.game_stats.playtime_forever/60 }} hours
-        <hr>
+
+        {% if (friend.game_stats.playtime_forever/60) > 100 %}
+            {% set gamecolor = 'btn-danger' %}
+        {% elif (friend.game_stats.playtime_forever/60) > 50 %}
+            {% set gamecolor = 'btn-warning' %}
+        {% elif (friend.game_stats.playtime_forever/60) > 20 %}
+            {% set gamecolor = 'btn-info' %}
+        {% elif (friend.game_stats.playtime_forever/60) > 1 %}
+            {% set gamecolor = 'btn-info' %}
+        {% else %}
+            {% set gamecolor = 'btn-default' %}
+        {% endif %}
+
+        <div class="text-center">
+            <a href="/user/{{ friend.steam_user.steamid }}" class="btn btn-lg {{ gamecolor }}">{{ friend.steam_user.personaname }}
+                 <span class="badge">{{ (friend.game_stats.playtime_forever/60)|round(2) }} hours</span>
+            </a>
+        </div>
+        <div class="col-sm-12" style="height:5px;"></div>
+
     {% endfor %}
 
 {% endblock %}

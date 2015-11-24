@@ -1,12 +1,38 @@
 {% extends "base.html" %}
 {% block content %}
 
-    <h2>{{ personaname }}'s games</h2>
-    <hr>
+<div class="container">
+
+    <div class="col-sm-offset-1 col-sm-10 text-center">
+        <h3><strong>{{ personaname }}'s</strong> games</h3>
+        <p>Click on a game to see friends + {{ personaname }}'s gametime</p>
+    </div>
+
+    <div class="col-sm-12" style="height:20px;"></div>
 
     {% for game in games_list|sort(reverse=True, attribute='playtime_forever') %}
-        <a href="/game/{{ steamid }}/{{ game.appid }}">{{game.name}}</a>: {{ game.playtime_forever/60 }} hours
-        <hr>
+
+        {% if (game.playtime_forever/60) > 100 %}
+            {% set gamecolor = 'btn-danger' %}
+        {% elif (game.playtime_forever/60) > 50 %}
+            {% set gamecolor = 'btn-warning' %}
+        {% elif (game.playtime_forever/60) > 20 %}
+            {% set gamecolor = 'btn-info' %}
+        {% elif (game.playtime_forever/60) > 1 %}
+            {% set gamecolor = 'btn-info' %}
+        {% else %}
+            {% set gamecolor = 'btn-default' %}
+        {% endif %}
+
+        <div class="text-center">
+            <a href="/game/{{ steamid }}/{{ game.appid }}" class="btn btn-lg {{ gamecolor }}">{{game.name}}
+                 <span class="badge">{{ (game.playtime_forever/60)|round(2) }} hours</span>
+            </a>
+        </div>
+        <div class="col-sm-12" style="height:5px;"></div>
+
     {% endfor %}
+
+</div>
 
 {% endblock %}

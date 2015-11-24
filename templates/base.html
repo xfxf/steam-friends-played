@@ -1,34 +1,17 @@
-<!doctype html>
-<html>
+{% extends "bootstrap/base.html" %}
 
-  <head>
-    <title>Show my friends Steam playtime</title>
-    <style>
-        html {
-            text-align: center;
-            font-family: sans-serif;
-        }
-        body {
-            font: 14px "Lucida Grande", "Lucida Sans", Tahoma, Verdana, sans-serif;
-            color: #000000;
-            text-align:center;
-        }
-        pre {
-            width: 80%;
-            display: inline-block;
-        }
-        .error {
-            color: red;
-        }
-    </style>
+{% block content %}
+{% endblock %}
 
-  </head>
+{% block scripts %}
+    <div class="col-sm-12" style="height:50px;"></div>
+    <div class="container-fluid text-center">
+      <a href="{{ url_for('.index', _external=TRUE) }}"><strong>{{ url_for('.index', _external=TRUE) }}</strong></a>&nbsp;&nbsp;&nbsp;
+      contact: <a href="https://twitter.com/xfxf" class="btn btn-xs btn-primary">@xfxf</a>
+      code: <a href="https://github.com/xfxf/steam-friends-played" class="btn btn-xs btn-primary">github.com/xfxf/steam-friends-played</a>
+    </div>
+    <div class="col-sm-12" style="height:20px;"></div>
+    {{super()}}
+{% endblock %}
 
-  <body>
 
-  {% block content %}
-  {% endblock %}
-
-  </body>
-
-</html>

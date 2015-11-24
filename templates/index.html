@@ -1,31 +1,65 @@
 {% extends "base.html" %}
+
 {% block content %}
+<div class="container">
 
-      <h1>Enter steam username to search</h1>
-      <h4>Be patient, queries can take some time (10-60 seconds)</h4>
-      <br>
+    <div class="col-sm-offset-1 col-sm-10 text-center">
+        <h2>Have I played Steam games longer than my friends?</h2>
+        <p>This uses live data, please be patient!  Username is not always the display name.</p>
+    </div>
 
-      <form onsubmit="return redirectUrl()">
-          <input type="text" id="username"><br><br>
-          <input type="submit" value="Submit">
-      </form>
+    <div class="col-sm-12" style="height:50px;"></div>
 
-      {% if e %}
-          <br><pre class="error">{{ e }}</pre>
-      {% endif %}
+    <form>
+        <div class="form-group form-group-lg col-sm-offset-2 col-sm-8">
+            <label for="username">Steam username:</label>
+            <input class="form-control" type="text" id="username" placeholder="GabeN">
+        </div>
 
-      <script>
-          function redirectUrl() {
+        <div class="form-group form-group-lg col-sm-offset-2 col-sm-8">
+            <button type="submit" class="form-control btn btn-lg btn-success" type="submit" id="search">Search</button>
+        </div>
+
+    {% if e %}
+        <div class="col-sm-offset-2 col-sm-8">
+            <pre class="alert alert-danger"><b>ERROR:</b> {{ e }}</pre>
+        </div>
+    {% endif %}
+
+    </form>
+
+</div>
+
+<div id="error" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-body">
+                You forgot to put a username in!
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn">OK</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block scripts %}
+    {{super()}}
+    <script>
+      $(document).ready(function() {
+          $("#search").click(function(){
               var username = document.getElementById('username').value;
               if (!username) {
-                  alert("No username entered!")
+                  $('#error').modal('show');
               } else {
-                  window.location.href = "/user/" + username;
+                  window.location.href = '/user/' + username;
               }
               return false;
-          }
-      </script>
-
-  </body>
-
+          })
+    });
+    </script>
 {% endblock %}
