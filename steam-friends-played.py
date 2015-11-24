@@ -4,10 +4,12 @@ from flask import Flask
 from flask import render_template
 
 try:
-    from local import API_KEY, DEBUG    # used for API_KEY + friends, optional
+    from local import API_KEY, DEBUG, CONCURRENT_API, FLASK_THREADED  # used for API_KEY + friends, optional
 except ImportError:
     API_KEY = ""                        # from https://steamcommunity.com/dev/apikey
     DEBUG = True                        # Enable debugging, False or True
+    CONCURRENT_API = 8                  # How many concurrent Steam API requests to make
+    FLASK_THREADED = True               # Run multithreaded Flask
 
 app = Flask(__name__.split('.')[0])
 
@@ -23,7 +25,8 @@ def steamid_appid(steam_id=None, app_id=None):
     me = MySteamFriends(
         api_key=API_KEY,
         steam_id=steam_id,
-        debugging=DEBUG)
+        debugging=DEBUG,
+        concurrent_api=CONCURRENT_API)
 
     print("Connected, collecting friends in-game time...")
     all_game_stats = me.get_everyones_gamestats(app_id)
@@ -60,7 +63,13 @@ def username(user_identifier=None):
                            personaname=me.get_steam_username(me.my_steam_id))
 
 
+@app.errorhandler(Exception)
+def unhandled_exception(e):
+    app.logger.error('Unhandled Exception: %s', e)
+    return render_template('500.html', e=e), 500
+
+
 if __name__ == "__main__":
     app.debug = DEBUG
     print("Starting...")
-    app.run(threaded=True)
+    app.run(threaded=FLASK_THREADED)

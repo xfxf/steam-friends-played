@@ -8,17 +8,20 @@ import itertools
 
 class MySteamFriends(object):
 
-    # concurrent Steam Web API requests to run
-    api_pool = ThreadPool(6)
-
-    def __init__(self, api_key: str, steam_username: str = None, steam_id: str = None, debugging: bool = False):
+    def __init__(self,
+                 api_key: str,
+                 steam_username: str = None,
+                 steam_id: str = None,
+                 debugging: bool = False,
+                 concurrent_api: int = 4):
         """Initialises a connection to the Steam Web API and populates a list of friends.
 
         Args:
             api_key (str): API key from https://steamcommunity.com/dev/apikey
             steam_username (Optional[str]): steam username to base friends list from
             steam_id (Optional[str]): steam ID to base friends list from (alternative to steam_username)
-            debugging (Optional[bool]): Enable debugging info.  Defaults to off.
+            debugging (Optional[bool]): Enable debugging info.  Defaults to off
+            concurrent_api (Optional[int]): How many concurrent Steam API subprocesses to run
         """
 
         if api_key is "":
@@ -37,6 +40,8 @@ class MySteamFriends(object):
         self.friends_list = self.__get_my_friends_list()
         self.my_games_list = self.get_users_games(self.my_steam_id)
 
+        self.api_pool = ThreadPool(concurrent_api)
+
         debug("api_key: %s, steam_ide: %s, my_steam_id: %s" % (api_key, self.my_steam_id, self.my_steam_id))
 
     def __get_my_steam_id(self, steam_user: str) -> str:
@@ -46,7 +51,7 @@ class MySteamFriends(object):
         friends = self.steam_api.ISteamUser.GetFriendList(steamid=self.my_steam_id)['friendslist']['friends']
         friends_list = [f['steamid'] for f in friends]
         friends_list.append(self.my_steam_id)
-        #friends_list = __populate_my_friends_list()
+        #friends_list = __populate_my_friends_list()  # inefficient, best to lookup smaller list after matching games
         return friends_list
 
     def __populate_my_friends_list(self):
@@ -73,21 +78,21 @@ class MySteamFriends(object):
         if result:
             return result['games']
 
-    def get_game_user_info(self, uid: str, appid: int) -> dict:
+    def get_game_user_info(self, uid: str, appid: str) -> dict:
         games = self.get_users_games(uid)
         if games:
             return [game for game in games if str(game['appid']) == appid]
 
-    def _get_game_user_info_dict(self, uid: str, appid: int) -> dict:
+    def _get_game_user_info_dict(self, uid: str, appid: str) -> dict:
         gameinfo = self.get_game_user_info(uid, appid)
         if gameinfo:
             return {uid: gameinfo}
 
     def get_everyones_gamestats(self, appid: str) -> dict:
-        # steam API is slow; use multiprocessing to submit concurrent HTTPS requests about each friend
+        # steam API is slow; uses threading to submit concurrent requests
         results = self.api_pool.starmap(self._get_game_user_info_dict, zip(self.friends_list, itertools.repeat(appid)))
 
-        # transform result (list) into a dict only containing actual results, where key is sid
+        # transform result containing actual results, where key is sid
         result_dict = {}
         for result in list(filter(None.__ne__, results)):
             for key, value in result.items():
@@ -96,11 +101,12 @@ class MySteamFriends(object):
         return result_dict
 
     def get_game_stats_detailed(self, gamestats: dict) -> list:
-        return [self._combine_steam_user_game_stats(sid, data) for sid, data in gamestats.items()]
-        #return sorted(game_playtime, key=lambda k: (k['hours']))
+        # steam API is slow; uses threading to submit concurrent requests
+        return self.api_pool.map(self._combine_steam_user_game_stats, gamestats.items())
 
-    def _combine_steam_user_game_stats(self, sid: str, data: dict) -> dict:
-        return ({
-            "steam_user": self.get_steam_user(sid), #self.friends_list[sid]['personaname'],
-            "game_stats": data
-        })
+    def _combine_steam_user_game_stats(self, data: tuple) -> dict:
+        for sid, game in [data]:
+            return ({
+                "steam_user": self.get_steam_user(sid),
+                "game_stats": game
+            })

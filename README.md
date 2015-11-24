@@ -6,7 +6,9 @@ Requires Python 3.4+ and a Steam Web API key (see start of steam-friends-played.
 
 ### Instructions
 
-Before running, fill out API_KEY in steam-friends-played.py
+Before running, change these settings in steam-friends-played.py:
+* Fill out API_KEY 
+* Optionally enable DEBUG mode (disabled by default; if enable, ensure this is not public accessible).
 
 ```
 pip install -r requirements.txt
@@ -14,4 +16,3 @@ python3 steam-friends-played.py
 ```
 
 Then visit http://127.0.0.1:5000/
-
