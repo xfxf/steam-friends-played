@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 from steam import WebAPI
 from logging import debug, basicConfig, DEBUG
 from multiprocessing.dummy import Pool as ThreadPool

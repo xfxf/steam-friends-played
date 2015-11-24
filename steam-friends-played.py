@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from steamfriends import MySteamFriends
+from mysteamfriends import MySteamFriends
 from flask import Flask
 from flask import render_template
 
@@ -62,4 +62,5 @@ def username(user_identifier=None):
 
 if __name__ == "__main__":
     app.debug = DEBUG
+    print("Starting...")
     app.run(threaded=True)
