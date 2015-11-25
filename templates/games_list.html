@@ -6,8 +6,7 @@
 <div class="container">
 
     <div class="col-sm-offset-1 col-sm-10 text-center">
-        <h3><strong>{{ steamuser.personaname }}'s</strong> games</h3>
-        <p>Click on a game to see friends + <strong>{{ steamuser.personaname }}'s</strong> gametimes</p>
+        <h3>Select a game from <strong>{{ steamuser.personaname }}'s</strong> Steam library</h3>
         <a href="{{ steamuser.profileurl }}">
             <span class="badge">
                 {{ steamuser.realname }} ({{steamuser.loccountrycode}}) joined {{ steamuser.timecreated|datetimeformat }}
