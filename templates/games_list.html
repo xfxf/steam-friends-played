@@ -6,8 +6,13 @@
 <div class="container">
 
     <div class="col-sm-offset-1 col-sm-10 text-center">
-        <h3><strong>{{ personaname }}'s</strong> games</h3>
-        <p>Click on a game to see friends + {{ personaname }}'s gametime</p>
+        <h3><strong>{{ steamuser.personaname }}'s</strong> games</h3>
+        <p>Click on a game to see friends + <strong>{{ steamuser.personaname }}'s</strong> gametimes</p>
+        <a href="{{ steamuser.profileurl }}">
+            <span class="badge">
+                {{ steamuser.realname }} ({{steamuser.loccountrycode}}) joined {{ steamuser.timecreated|datetimeformat }}
+            </span>
+        </a>
     </div>
 
     <div class="col-sm-12" style="height:20px;"></div>
@@ -27,8 +32,12 @@
         {% endif %}
 
         <div class="text-center">
-            <a href="/game/{{ steamid }}/{{ game.appid }}" class="btn btn-lg {{ gamecolor }}">{{game.name}}
-                 <span class="badge">{{ (game.playtime_forever/60)|round(2) }} hours</span>
+            <a href="/game/{{ steamid }}/{{ game.appid }}" class="btn btn-lg {{ gamecolor }}">
+                <div class="pull-left">
+                    <img src="http://media.steampowered.com/steamcommunity/public/images/apps/{{ game.appid }}/{{ game.img_icon_url }}.jpg" height="32" width="32">
+                    &nbsp;&nbsp;{{game.name}}
+                    &nbsp;&nbsp;<span class="badge">{{ (game.playtime_forever/60)|round(2) }} hours</span>
+                </div>
             </a>
         </div>
         <div class="col-sm-12" style="height:5px;"></div>

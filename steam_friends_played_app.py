@@ -3,6 +3,7 @@ from mysteamfriends import MySteamFriends
 from flask import Flask
 from flask import render_template
 from flask_bootstrap import Bootstrap
+from flask.ext.babel import Babel
 
 try:
     from local import API_KEY, DEBUG, CONCURRENT_API, FLASK_THREADED, SERVER_NAME  # local.py optional
@@ -17,6 +18,8 @@ except ImportError:
 app = Flask(__name__.split('.')[0])
 app.config["SERVER_NAME"] = SERVER_NAME
 Bootstrap(app)
+babel = Babel(app)
+
 
 
 @app.route('/')
@@ -42,7 +45,7 @@ def steamid_appid(steam_id=None, app_id=None):
     return render_template('steamid_appid.html',
                            game_stats_detailed=all_game_stats_detailed,
                            appid=app_id,
-                           personaname=me.get_steam_username(me.my_steam_id),
+                           steamuser=me.get_steam_user(me.my_steam_id),
                            game_title=me.get_game_name(app_id))
 
 
@@ -65,7 +68,7 @@ def username(user_identifier=None):
     return render_template('games_list.html',
                            games_list=me.my_games_list,
                            steamid=me.my_steam_id,
-                           personaname=me.get_steam_username(me.my_steam_id))
+                           steamuser=me.get_steam_user(me.my_steam_id))
 
 
 @app.errorhandler(NameError)

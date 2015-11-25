@@ -1,13 +1,19 @@
 {% extends "base.html" %}
-{% block title %}PeerPressure: {{ personaname }}'s friends playing {{ game_title }}{% endblock %}
+{% block title %}PeerPressure: {{ steamuser.personaname }}'s friends playing {{ game_title }}{% endblock %}
 
 {% block content %}
 
 <div class="container">
 
     <div class="col-sm-offset-1 col-sm-10 text-center">
-        <h3><strong>{{ game_title }}</strong> playtime including {{ personaname }}'s friends</h3>
+        <h3><strong>{{ game_title }}</strong> playtime for <strong>{{ steamuser.personaname }}</strong> & friends</h3>
         <p>Click on a friend to see their games</p>
+
+        <a href="{{ steamuser.profileurl }}">
+            <span class="badge">
+                {{ steamuser.realname }} ({{steamuser.loccountrycode}}), joined {{ steamuser.timecreated|datetimeformat }}
+            </span>
+        </a>
     </div>
 
     <div class="col-sm-12" style="height:20px;"></div>
@@ -27,8 +33,10 @@
         {% endif %}
 
         <div class="text-center">
-            <a href="/user/{{ friend.steam_user.steamid }}" class="btn btn-lg {{ gamecolor }}">{{ friend.steam_user.personaname }}
-                 <span class="badge">{{ (friend.game_stats.playtime_forever/60)|round(2) }} hours</span>
+            <a href="/user/{{ friend.steam_user.steamid }}" class="btn btn-lg {{ gamecolor }}">
+                 <img src="{{ friend.steam_user.avatar }}" width="32" height="32">
+                 &nbsp;&nbsp;{{ friend.steam_user.personaname }}
+                 &nbsp;&nbsp;<span class="badge">{{ (friend.game_stats.playtime_forever/60)|round(2) }} hours</span>
             </a>
         </div>
         <div class="col-sm-12" style="height:5px;"></div>
