@@ -11,7 +11,7 @@
 
         <a href="{{ steamuser.profileurl }}">
             <span class="badge">
-                {{ steamuser.realname }} ({{steamuser.loccountrycode}}), joined {{ steamuser.timecreated|datetimeformat }}
+                {{ steamuser.realname }} ({{steamuser.loccountrycode}}) joined {{ steamuser.timecreated|datetimeformat }}, total {{ total_games }} games, {{(total_gametime/60)|round(2) }} hours
             </span>
         </a>
     </div>

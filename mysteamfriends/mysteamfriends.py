@@ -39,6 +39,7 @@ class MySteamFriends(object):
 
         self.friends_list = self.__get_my_friends_list()
         self.my_games_list = self.get_users_games(self.my_steam_id)
+        self.total_gametime = self.get_my_total_playtime()
 
         self.api_pool = ThreadPool(concurrent_api)
 
@@ -65,6 +66,12 @@ class MySteamFriends(object):
         gameinfo = self.get_game_user_info(uid, appid)
         if gameinfo:
             return {uid: gameinfo}
+
+    def get_my_total_playtime(self) -> int:
+        total = 0
+        for game in self.my_games_list:
+            total += int(game['playtime_forever'])
+        return total
 
     def get_game_name(self, appid: str) -> str:
         return [game['name'] for game in self.my_games_list if str(game['appid']) == appid][0]

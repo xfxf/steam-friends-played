@@ -46,6 +46,8 @@ def steamid_appid(steam_id=None, app_id=None):
                            game_stats_detailed=all_game_stats_detailed,
                            appid=app_id,
                            steamuser=me.get_steam_user(me.my_steam_id),
+                           total_gametime=me.total_gametime,
+                           total_games=len(me.my_games_list),
                            game_title=me.get_game_name(app_id))
 
 
@@ -65,9 +67,13 @@ def username(user_identifier=None):
         steam_id=steam_id,
         debugging=DEBUG)
 
+
+
     return render_template('games_list.html',
                            games_list=me.my_games_list,
                            steamid=me.my_steam_id,
+                           total_gametime=me.total_gametime,
+                           total_games=len(me.my_games_list),
                            steamuser=me.get_steam_user(me.my_steam_id))
 
 
